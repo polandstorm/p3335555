@@ -1,0 +1,165 @@
+Sua tarefa: Analise a aplicação e confirme se cada um dos requisitos listados abaixo foi implementado corretamente. Crie um relatório de análise, indicando o status de cada item: "Implementado", "Parcialmente Implementado" (com detalhes do que falta) ou "Não Implementado".
+
+Checklist de Verificação de Funcionalidades
+1. Acesso e Permissões de Usuário
+[  ] Super Usuário (Admin): Existe um login de administrador com acesso irrestrito a todas as funcionalidades do sistema.
+
+[  ] Usuário Colaborador: Existe um login de colaborador com acesso restrito, visualizando apenas os seus próprios dados e pacientes.
+
+[  ] Criação de Usuários: O Admin pode criar novos usuários (colaboradores) e também promover outros usuários a administradores.
+
+[  ] Segregação de Dados: Um colaborador comum NÃO consegue visualizar o dashboard geral da empresa, as metas de outros colaboradores ou os pacientes que não estão sob sua responsabilidade (exceto os "desativados").
+
+2. Módulo de Pacientes
+[  ] Cadastro Completo: O cadastro de um paciente contém todos os seguintes campos:
+
+Nome
+
+Cidade (selecionável de uma lista criada pelo Admin)
+
+Classificação (ex: Bronze, Prata, Ouro, Diamante - definida pelo Admin)
+
+Número de telefone
+
+Procedimentos realizados
+
+Colaborador responsável
+
+Status atual (campo de texto livre para atualização constante)
+
+Próximos passos (campo de texto)
+
+Data da última consulta
+
+Foto do paciente
+
+Campo para "Objetivos na clínica"
+
+Campo para "Maiores dores"
+
+Anotações/Observações importantes
+
+[  ] Página Dedicada ao Paciente: Cada paciente possui uma página de perfil individual.
+
+[  ] Visão de Linha do Tempo (Prontuário): A página do paciente exibe seu histórico em formato de linha do tempo, mostrando eventos como:
+
+Procedimentos realizados (e quando).
+
+Consultas agendadas e seus resultados (compareceu, faltou, etc.).
+
+Anotações datadas feitas pelo colaborador.
+
+Atualizações de status.
+
+[  ] Histórico Financeiro: A página do paciente exibe o valor total que ele já gastou na clínica (LTV).
+
+[  ] Gestão de Procedimentos do Paciente: Na página do paciente, é possível ver claramente os procedimentos que ele já realizou e os que foram ofertados mas "não fechou" (oportunidades).
+
+[  ] Mover Oportunidades: O colaborador pode, de forma fácil, mover um procedimento da lista de "não fechou" para a lista de "fechou".
+
+3. Módulo de Colaboradores
+[  ] Perfil do Colaborador: O cadastro do colaborador inclui:
+
+Nome
+
+Cidade de responsabilidade
+
+Meta de faturamento
+
+Meta de consultas
+
+[  ] Dashboard Individual: O colaborador tem um dashboard que exibe suas métricas de desempenho:
+
+Faturamento realizado vs. Meta.
+
+Consultas agendadas vs. Meta.
+
+Taxa de aproveitamento/conversão.
+
+Número de oportunidades em aberto.
+
+Número de pacientes que faltaram.
+
+Número de pacientes enviados para a lista de "desativados".
+
+Taxa de adesão aos feedbacks (eventos de acompanhamento).
+
+[  ] Visão de "Planilha": Existe uma tela onde o colaborador vê todos os seus pacientes ativos em um formato de lista/planilha, permitindo a edição rápida do campo "Status atual".
+
+[  ] Agenda do Colaborador: O colaborador tem uma agenda clara que mostra:
+
+Próximas consultas agendadas.
+
+Eventos de acompanhamento/feedback de procedimentos.
+
+Tarefas de retorno para renovação de procedimentos.
+
+Tarefas específicas atribuídas pelo Admin.
+
+[  ] Filtros de Pacientes: O colaborador pode filtrar sua lista de pacientes por:
+
+Período da última consulta.
+
+Pacientes com procedimentos vencidos.
+
+Pacientes ativos.
+
+Pacientes desativados (acesso à lista geral de desativados).
+
+4. Módulo de Administrador
+[  ] Dashboard Geral: O Admin tem um dashboard com KPIs globais da empresa:
+
+Estatísticas de progresso (faturamento, novos pacientes) por semana, mês ou período personalizado.
+
+Número total de pacientes parados/sem interação.
+
+Visão geral das pendências de cada colaborador.
+
+[  ] Gestão de Colaboradores: O Admin pode visualizar a carga de trabalho e o desempenho de cada colaborador em detalhe.
+
+[  ] Criação de Cidades: O Admin pode criar e gerenciar as cidades que serão usadas nos cadastros.
+
+[  ] Criação de Procedimentos: O Admin pode criar e gerenciar os procedimentos da clínica, com os seguintes campos:
+
+Nome do procedimento
+
+Valor (aproximado)
+
+Data de validade (opcional, em dias/meses, para gerar tarefas de retorno)
+
+Eventos de acompanhamento (opcional, ex: "enviar mensagem em 7 dias, 15 dias, 30 dias")
+
+[  ] Criação de Tarefas: O Admin possui uma função "Criar Nova Tarefa", onde ele pode selecionar um colaborador, descrever a tarefa e definir um prazo. O sistema deve permitir ao Admin verificar se a tarefa foi cumprida.
+
+5. Fluxos de Trabalho (Workflows)
+[  ] Adicionar Pacientes (Via Admin): O Admin pode adicionar um paciente com informações mínimas (ex: apenas o nome). Esse paciente deve aparecer em uma lista de "Cadastros a Completar" para os colaboradores.
+
+[  ] Adicionar Pacientes (Via Colaborador): O colaborador adiciona um novo paciente ao agendar uma nova consulta para ele.
+
+[  ] Pós-Consulta: Ao chegar a data de uma consulta agendada, o sistema obriga o colaborador a registrar um resultado:
+
+Opção 1: Informar quais procedimentos o paciente fechou.
+
+Opção 2: Marcar que o paciente faltou (e o paciente vai para uma lista de "Desistentes" para tentativa de reversão).
+
+Opção 3: Marcar que não fechou nada (e o paciente fica na lista de "Oportunidades em Aberto").
+
+[  ] Eventos de Feedback:
+
+Quando um evento de acompanhamento (feedback) aparece na agenda, o colaborador deve dar um "check" e anotar o resultado da conversa.
+
+Se o paciente não responder, o evento deve permanecer em aberto e destacado em vermelho na agenda do colaborador até ser resolvido.
+
+[  ] Eventos de Retorno (Renovação):
+
+Quando um procedimento está para vencer, uma tarefa aparece na agenda do colaborador.
+
+O colaborador deve registrar o resultado: "Reagendado para dia X" ou "Não consegui reagendar por motivo Y".
+
+Se não for possível reagendar, a tarefa permanece aberta até ser resolvida ou o paciente ser desativado.
+
+[  ] Desativação de Pacientes (Lista Preta):
+
+Para mover um paciente para a lista de "desativados", o colaborador é obrigado a fornecer uma justificativa.
+
+A lista de desativados é pública para todos os colaboradores, que podem ver o histórico e tentar reverter o paciente.

@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instituto Melo - Sistema de Pós-Venda</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#1976D2',
+                        'primary-light': '#42A5F5',
+                        'primary-dark': '#1565C0',
+                        'secondary': '#0288D1',
+                        'bronze': '#CD7F32',
+                        'silver': '#C0C0C0',
+                        'gold': '#FFD700',
+                        'diamond': '#B9F2FF'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-inter bg-gray-50 text-gray-900">
+    <!-- @COMPONENT: AppLayout -->
+    <div class="min-h-screen flex">
+        <!-- Sidebar Navigation -->
+        <!-- @COMPONENT: Sidebar -->
+        <aside class="w-64 bg-white shadow-lg border-r border-gray-200 fixed h-full z-10">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-primary rounded-lg p-2">
+                        <i class="fas fa-heartbeat text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-semibold text-gray-900">Instituto Melo</h1>
+                        <p class="text-sm text-gray-500">Sistema de Pós-Venda</p>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="mt-6">
+                <!-- @STATE: activeTab:string = 'dashboard' -->
+                <div class="px-4 space-y-2">
+                    <a href="#" data-event="click:setActiveTab('dashboard')" class="flex items-center px-4 py-3 text-primary bg-blue-50 rounded-lg font-medium">
+                        <i class="fas fa-chart-pie w-5 h-5 mr-3"></i>
+                        Dashboard
+                    </a>
+                    <a href="#" data-event="click:setActiveTab('patients')" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-users w-5 h-5 mr-3"></i>
+                        Pacientes
+                    </a>
+                    <a href="#" data-event="click:setActiveTab('collaborators')" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-user-tie w-5 h-5 mr-3"></i>
+                        Colaboradores
+                    </a>
+                    <a href="#" data-event="click:setActiveTab('procedures')" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-clipboard-list w-5 h-5 mr-3"></i>
+                        Procedimentos
+                    </a>
+                    <a href="#" data-event="click:setActiveTab('events')" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-calendar-alt w-5 h-5 mr-3"></i>
+                        Eventos & Follow-up
+                    </a>
+                    <a href="#" data-event="click:setActiveTab('pending')" class="flex items-center px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fas fa-exclamation-triangle w-5 h-5 mr-3"></i>
+                        Cadastros Pendentes
+                        <span class="ml-auto bg-orange-100 text-orange-600 text-xs px-2 py-1 rounded-full" data-bind="pendingCount">12</span>
+                    </a>
+                </div>
+            </nav>
+
+            <div class="absolute bottom-0 w-full p-4 border-t border-gray-200">
+                <div class="flex items-center space-x-3" data-mock="true">
+                    <div class="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center">
+                        <i class="fas fa-user text-gray-600 text-sm"></i>
+                    </div>
+                    <div class="text-sm">
+                        <p class="font-medium text-gray-900" data-bind="currentUser.name">Dr. João Silva</p>
+                        <p class="text-gray-500" data-bind="currentUser.role">Administrador</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- @END_COMPONENT: Sidebar -->
+
+        <!-- Main Content Area -->
+        <main class="flex-1 ml-64">
+            <!-- Top Header -->
+            <!-- @COMPONENT: Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200 px-8 py-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-900">Dashboard</h2>
+                        <p class="text-gray-600 mt-1">Visão geral do sistema de pós-venda</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- @COMPONENT: NotificationBell -->
+                        <button class="relative p-2 text-gray-400 hover:text-gray-600 transition-colors" data-event="click:toggleNotifications">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" data-bind="notificationCount">3</span>
+                        </button>
+                        <!-- @END_COMPONENT: NotificationBell -->
+                        
+                        <!-- @COMPONENT: AddPatientButton -->
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center space-x-2" data-event="click:openAddPatientModal">
+                            <i class="fas fa-plus"></i>
+                            <span>Novo Paciente</span>
+                        </button>
+                        <!-- @END_COMPONENT: AddPatientButton -->
+                    </div>
+                </div>
+            </header>
+            <!-- @END_COMPONENT: Header -->
+
+            <!-- Dashboard Content -->
+            <div class="p-8">
+                <!-- KPI Cards -->
+                <!-- @COMPONENT: KPISection -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Total de Pacientes</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2" data-bind="metrics.totalPatients">1,247</p>
+                            </div>
+                            <div class="bg-blue-100 rounded-lg p-3">
+                                <i class="fas fa-users text-primary text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-green-600 text-sm font-medium">+12%</span>
+                            <span class="text-gray-500 text-sm ml-2">vs mês anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Procedimentos Ativos</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2" data-bind="metrics.activeProcedures">342</p>
+                            </div>
+                            <div class="bg-green-100 rounded-lg p-3">
+                                <i class="fas fa-clipboard-check text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-green-600 text-sm font-medium">+8%</span>
+                            <span class="text-gray-500 text-sm ml-2">vs mês anterior</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Follow-ups Pendentes</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2" data-bind="metrics.pendingFollowups">28</p>
+                            </div>
+                            <div class="bg-orange-100 rounded-lg p-3">
+                                <i class="fas fa-clock text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-orange-600 text-sm font-medium">Requer atenção</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Faturamento Mensal</p>
+                                <p class="text-3xl font-bold text-gray-900 mt-2" data-bind="metrics.monthlyRevenue">R$ 89,350</p>
+                            </div>
+                            <div class="bg-emerald-100 rounded-lg p-3">
+                                <i class="fas fa-chart-line text-emerald-600 text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center">
+                            <span class="text-green-600 text-sm font-medium">+18%</span>
+                            <span class="text-gray-500 text-sm ml-2">vs mês anterior</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: KPISection -->
+
+                <!-- Main Dashboard Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Recent Patients -->
+                    <!-- @COMPONENT: RecentPatients -->
+                    <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-900">Pacientes Recentes</h3>
+                                <a href="#" class="text-primary hover:text-primary-dark font-medium text-sm" data-event="click:viewAllPatients">Ver todos</a>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!-- @MAP: recentPatients.map(patient => ( -->
+                            <div class="space-y-4" data-mock="true">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="bg-gold rounded-lg w-3 h-3"></div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="patient.name">Maria Santos</p>
+                                            <p class="text-sm text-gray-500" data-bind="patient.city">São Paulo</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900" data-bind="patient.lastProcedure">Botox facial</p>
+                                        <p class="text-xs text-gray-500" data-bind="patient.lastConsultation">Há 5 dias</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium" data-bind="patient.status">Ativo</span>
+                                        <button class="text-gray-400 hover:text-gray-600" data-event="click:viewPatientDetails(patient.id)">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="bg-silver rounded-lg w-3 h-3"></div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="patient.name">João Oliveira</p>
+                                            <p class="text-sm text-gray-500" data-bind="patient.city">Rio de Janeiro</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900" data-bind="patient.lastProcedure">Preenchimento labial</p>
+                                        <p class="text-xs text-gray-500" data-bind="patient.lastConsultation">Há 2 semanas</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="bg-orange-100 text-orange-800 px-2 py-1 rounded-full text-xs font-medium" data-bind="patient.status">Follow-up</span>
+                                        <button class="text-gray-400 hover:text-gray-600" data-event="click:viewPatientDetails(patient.id)">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="bg-diamond rounded-lg w-3 h-3"></div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="patient.name">Ana Costa</p>
+                                            <p class="text-sm text-gray-500" data-bind="patient.city">Brasília</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-medium text-gray-900" data-bind="patient.lastProcedure">Harmonização facial</p>
+                                        <p class="text-xs text-gray-500" data-bind="patient.lastConsultation">Há 1 mês</p>
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium" data-bind="patient.status">Retorno</span>
+                                        <button class="text-gray-400 hover:text-gray-600" data-event="click:viewPatientDetails(patient.id)">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: RecentPatients -->
+
+                    <!-- Sidebar Stats -->
+                    <div class="space-y-6">
+                        <!-- Quick Actions -->
+                        <!-- @COMPONENT: QuickActions -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Ações Rápidas</h3>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <button class="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors" data-event="click:scheduleConsultation">
+                                    <div class="bg-blue-100 rounded-lg p-2">
+                                        <i class="fas fa-calendar-plus text-primary"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700">Agendar Consulta</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors" data-event="click:addProcedure">
+                                    <div class="bg-green-100 rounded-lg p-2">
+                                        <i class="fas fa-plus-circle text-green-600"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700">Novo Procedimento</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors" data-event="click:sendFollowup">
+                                    <div class="bg-purple-100 rounded-lg p-2">
+                                        <i class="fas fa-envelope text-purple-600"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700">Enviar Follow-up</span>
+                                </button>
+                                <button class="w-full flex items-center space-x-3 p-3 text-left hover:bg-gray-50 rounded-lg transition-colors" data-event="click:generateReport">
+                                    <div class="bg-orange-100 rounded-lg p-2">
+                                        <i class="fas fa-chart-bar text-orange-600"></i>
+                                    </div>
+                                    <span class="font-medium text-gray-700">Gerar Relatório</span>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- @END_COMPONENT: QuickActions -->
+
+                        <!-- Collaborator Performance -->
+                        <!-- @COMPONENT: CollaboratorPerformance -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-900">Performance Colaboradores</h3>
+                            </div>
+                            <div class="p-6">
+                                <!-- @MAP: topCollaborators.map(collaborator => ( -->
+                                <div class="space-y-4" data-mock="true">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="bg-green-100 rounded-full w-8 h-8 flex items-center justify-center">
+                                                <i class="fas fa-user text-green-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900" data-bind="collaborator.name">Carlos Silva</p>
+                                                <p class="text-xs text-gray-500" data-bind="collaborator.city">São Paulo</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold text-gray-900" data-bind="collaborator.revenue">R$ 28,500</p>
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 85%" data-bind="collaborator.goalProgress"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="bg-blue-100 rounded-full w-8 h-8 flex items-center justify-center">
+                                                <i class="fas fa-user text-blue-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900" data-bind="collaborator.name">Ana Paula</p>
+                                                <p class="text-xs text-gray-500" data-bind="collaborator.city">Rio de Janeiro</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold text-gray-900" data-bind="collaborator.revenue">R$ 24,800</p>
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 72%" data-bind="collaborator.goalProgress"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="bg-purple-100 rounded-full w-8 h-8 flex items-center justify-center">
+                                                <i class="fas fa-user text-purple-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-medium text-gray-900" data-bind="collaborator.name">Roberto Lima</p>
+                                                <p class="text-xs text-gray-500" data-bind="collaborator.city">Brasília</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right">
+                                            <p class="font-semibold text-gray-900" data-bind="collaborator.revenue">R$ 19,200</p>
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                <div class="bg-orange-500 h-2 rounded-full" style="width: 64%" data-bind="collaborator.goalProgress"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- @END_MAP )) -->
+                            </div>
+                        </div>
+                        <!-- @END_COMPONENT: CollaboratorPerformance -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity & Upcoming Events -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                    <!-- Recent Activity -->
+                    <!-- @COMPONENT: RecentActivity -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-900">Atividade Recente</h3>
+                        </div>
+                        <div class="p-6">
+                            <!-- @MAP: recentActivity.map(activity => ( -->
+                            <div class="space-y-4" data-mock="true">
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-green-100 rounded-full p-1 mt-1">
+                                        <i class="fas fa-check text-green-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-900" data-bind="activity.description">
+                                            <span class="font-medium">Carlos Silva</span> concluiu procedimento para 
+                                            <span class="font-medium">Maria Santos</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1" data-bind="activity.timestamp">Há 2 horas</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-blue-100 rounded-full p-1 mt-1">
+                                        <i class="fas fa-calendar text-blue-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-900" data-bind="activity.description">
+                                            Nova consulta agendada para <span class="font-medium">Ana Costa</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1" data-bind="activity.timestamp">Há 4 horas</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-purple-100 rounded-full p-1 mt-1">
+                                        <i class="fas fa-envelope text-purple-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-900" data-bind="activity.description">
+                                            Follow-up enviado para <span class="font-medium">João Oliveira</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1" data-bind="activity.timestamp">Há 6 horas</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-start space-x-3">
+                                    <div class="bg-orange-100 rounded-full p-1 mt-1">
+                                        <i class="fas fa-user-plus text-orange-600 text-xs"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm text-gray-900" data-bind="activity.description">
+                                            Novo paciente cadastrado: <span class="font-medium">Pedro Souza</span>
+                                        </p>
+                                        <p class="text-xs text-gray-500 mt-1" data-bind="activity.timestamp">Ontem</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: RecentActivity -->
+
+                    <!-- Upcoming Events -->
+                    <!-- @COMPONENT: UpcomingEvents -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-6 border-b border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-900">Próximos Eventos</h3>
+                                <button class="text-primary hover:text-primary-dark font-medium text-sm" data-event="click:viewAllEvents">Ver agenda</button>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <!-- @MAP: upcomingEvents.map(event => ( -->
+                            <div class="space-y-4" data-mock="true">
+                                <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-primary rounded-lg p-2">
+                                            <i class="fas fa-calendar-day text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="event.title">Consulta - Maria Santos</p>
+                                            <p class="text-sm text-gray-600" data-bind="event.time">Hoje às 14:30</p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium" data-bind="event.type">Consulta</span>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-purple-600 rounded-lg p-2">
+                                            <i class="fas fa-phone text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="event.title">Follow-up - João Oliveira</p>
+                                            <p class="text-sm text-gray-600" data-bind="event.time">Amanhã às 10:00</p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-purple-100 text-purple-800 px-2 py-1 rounded text-xs font-medium" data-bind="event.type">Follow-up</span>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-green-600 rounded-lg p-2">
+                                            <i class="fas fa-clipboard-check text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="event.title">Procedimento - Ana Costa</p>
+                                            <p class="text-sm text-gray-600" data-bind="event.time">Quinta-feira às 16:00</p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-green-100 text-green-800 px-2 py-1 rounded text-xs font-medium" data-bind="event.type">Procedimento</span>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg border border-orange-200">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="bg-orange-600 rounded-lg p-2">
+                                            <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium text-gray-900" data-bind="event.title">Retorno vencido - Pedro Souza</p>
+                                            <p class="text-sm text-gray-600" data-bind="event.time">Venceu há 3 dias</p>
+                                        </div>
+                                    </div>
+                                    <span class="bg-red-100 text-red-800 px-2 py-1 rounded text-xs font-medium" data-bind="event.type">Atrasado</span>
+                                </div>
+                            </div>
+                            <!-- @END_MAP )) -->
+                        </div>
+                    </div>
+                    <!-- @END_COMPONENT: UpcomingEvents -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- @END_COMPONENT: AppLayout -->
+
+    <!-- Add Patient Modal -->
+    <!-- @COMPONENT: AddPatientModal [isOpen, onClose, onSubmit] -->
+    <div class="fixed inset-0 z-50 overflow-y-auto hidden" data-state="addPatientModal.isOpen">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" data-event="click:closeAddPatientModal"></div>
+
+            <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full sm:p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Novo Paciente</h3>
+                    <button class="text-gray-400 hover:text-gray-600" data-event="click:closeAddPatientModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <form class="space-y-6" data-event="submit:handleAddPatient" data-implementation="Should validate form and submit patient data">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Nome Completo</label>
+                            <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Digite o nome do paciente" data-mock="true" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
+                            <input type="tel" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="(11) 99999-9999" data-mock="true" />
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Cidade</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                                <option value="">Selecione uma cidade</option>
+                                <option value="sao-paulo">São Paulo</option>
+                                <option value="rio-de-janeiro">Rio de Janeiro</option>
+                                <option value="brasilia">Brasília</option>
+                                <option value="belo-horizonte">Belo Horizonte</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Classificação</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                                <option value="">Selecione uma classificação</option>
+                                <option value="bronze">Bronze</option>
+                                <option value="silver">Silver</option>
+                                <option value="gold">Gold</option>
+                                <option value="diamond">Diamond</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Colaborador Responsável</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true">
+                                <option value="">Selecione um colaborador</option>
+                                <option value="carlos-silva">Carlos Silva</option>
+                                <option value="ana-paula">Ana Paula</option>
+                                <option value="roberto-lima">Roberto Lima</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Data da Última Consulta</label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" data-mock="true" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Status Atual</label>
+                        <textarea class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" rows="3" placeholder="Descreva o status atual do paciente..." data-mock="true"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Próximos Passos</label>
+                        <textarea class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" rows="3" placeholder="Descreva os próximos passos para este paciente..." data-mock="true"></textarea>
+                    </div>
+
+                    <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+                        <button type="button" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" data-event="click:closeAddPatientModal">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-primary border border-transparent rounded-lg hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            Salvar Paciente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- @END_COMPONENT: AddPatientModal -->
+
+    <script>
+        // TODO: Implement business logic, API calls, state management
+        
+        (function() {
+            // Modal functionality
+            window.openAddPatientModal = function() {
+                document.querySelector('[data-state="addPatientModal.isOpen"]').classList.remove('hidden');
+            };
+
+            window.closeAddPatientModal = function() {
+                document.querySelector('[data-state="addPatientModal.isOpen"]').classList.add('hidden');
+            };
+
+            // Tab navigation
+            window.setActiveTab = function(tab) {
+                // TODO: Implement tab switching logic
+                console.log('Switching to tab:', tab);
+            };
+
+            // Event handlers
+            window.viewAllPatients = function() {
+                console.log('Navigate to patients page');
+            };
+
+            window.viewPatientDetails = function(patientId) {
+                console.log('View patient details:', patientId);
+            };
+
+            window.scheduleConsultation = function() {
+                console.log('Open schedule consultation modal');
+            };
+
+            window.addProcedure = function() {
+                console.log('Open add procedure modal');
+            };
+
+            window.sendFollowup = function() {
+                console.log('Open send follow-up modal');
+            };
+
+            window.generateReport = function() {
+                console.log('Generate and download report');
+            };
+
+            window.viewAllEvents = function() {
+                console.log('Navigate to events calendar');
+            };
+
+            window.toggleNotifications = function() {
+                console.log('Toggle notifications dropdown');
+            };
+
+            window.handleAddPatient = function(event) {
+                event.preventDefault();
+                // TODO: Validate form data and submit to API
+                console.log('Submit new patient form');
+                closeAddPatientModal();
+            };
+
+            // Event listeners
+            document.addEventListener('click', function(e) {
+                const eventHandler = e.target.getAttribute('data-event');
+                if (eventHandler && eventHandler.includes('click:')) {
+                    const [_, functionName] = eventHandler.split('click:');
+                    if (window[functionName]) {
+                        window[functionName]();
+                    }
+                }
+            });
+
+            document.addEventListener('submit', function(e) {
+                const eventHandler = e.target.getAttribute('data-event');
+                if (eventHandler && eventHandler.includes('submit:')) {
+                    const [_, functionName] = eventHandler.split('submit:');
+                    if (window[functionName]) {
+                        window[functionName](e);
+                    }
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

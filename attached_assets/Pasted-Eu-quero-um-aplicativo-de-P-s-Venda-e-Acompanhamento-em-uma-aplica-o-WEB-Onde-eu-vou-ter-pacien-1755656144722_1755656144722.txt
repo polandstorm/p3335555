@@ -1,0 +1,42 @@
+Eu quero um aplicativo de Pós Venda e Acompanhamento em uma aplicação WEB.
+
+Onde eu vou ter pacientes cadastrados no sistema, e cada paciente receberá essas seguintes classificações:
+
+1. Nome.
+2. Cidade {Eu posso dividir e classificar eles por cidade}
+3. Classificação {Eu posso criar classificações ex: Bronze, prata, diamante, ouro}.
+4. Número de telefone {Para os meus colaboradores entrarem em contato}
+5. Procedimentos realizados da última consulta.
+6. Colaborador responsável pelo paciente
+7. Status atual {o colaborador terá que preencher constantemente o que está acontecendo com esse paciente nesse momento}
+8.Próximos passos a serem tomados para esse paciente.
+9. Data da última consulta desse paciente.
+
+===
+
+Cada procedimento ele tem às seguintes informações:
+
+1. Valor
+2 Data de validade {opcional} {essa data é para depois o sistema notificar que ele precisa retornar, e coloca depois a quantidade de dias que ele está sem esse procedimento} 
+3. Eventos criados para acompanhamento de evolução {opcional} {cada evento desse o colaborador responsável precisa mandar mensagem e perguntar como o paciente está}.
+
+===
+
+Eu quero que o meu sistema tenha colaboradores:
+
+1. Nome do colaborador.
+2. Cidade que o colaborador está responsável.
+3. Meta de faturamento que esse colaborador tem.
+4. Meta de consultas que esse colaborador tem.
+
+===
+
+Para adicionar pacientes tem 2 Formas.
+
+1. Pelo login do administrador, é um super user, que pode adicionar pacientes antigos. { e que pode colocar o colaborador como admin}{onde ele colocará informações básicas . 
+1. Nome.
+
+ONDE DEPOIS FICARÁ APARECENDO EM UMA ABA DE PACIENTES QUE PRECISAM COMPLETAR O CADASTRO PELO COLABORADOR, ONDE ELE SE ENCARREGARÁ DE DIZER, QUAL CIDADE É ESSE PACIENTE, O QUE ESTÁ ACONTECENDO COM ELE, TELEFONE, CIDADE, CLASSIFICAÇÃO, QUAIS PROCEDIMENTOS ELE FECHOU, E QUANDO FECHOU, 
+
+
+2. O Colaborador pode adicionar o paciente pelo próprio sistema em agendar consulta, e cada consulta que o colaborador realizar, ele irá agendar um evento, daí quando chegar esse evento ele é obrigado a colocar no sistema o que esse paciente fechou ou não fechou de procedimento ou a opção de que o paciente faltou na consulta, DAI ESSE COLABORADOR SE ENCARREGARÁ DE TENTAR REVERTER ESSE PACIENTE NA ABA DE DESISTENTES, OU SE NÃO FECHOU NADA, TENTARÁ CORRER ATRÁS PARA FAZER ESSE PACIENTE FECHAR OS PROCEDIMENTOS.
